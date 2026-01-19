@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Careflow - en miniapp för ärendehantering, byggd i KnockoutJS." />
+    <title>Careflow - Ärendeflöde</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <div>
+          <h1>Careflow • Ärendeflöde</h1>
+          <p class="subtitle">
+            En liten KnockoutJS-app som tränar MVVM, observables och computed.
+            Visar ärenden för kund- och internsupport, med fokus på SLA och prioritering.
+          </p>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <span data-bind="text: totalCount"></span>
+            <p>Totalt antal ärenden</p>
+          </div>
+          <div class="stat-card">
+            <span data-bind="text: openCount"></span>
+            <p>Öppna ärenden</p>
+          </div>
+          <div class="stat-card">
+            <span data-bind="text: overdueCount"></span>
+            <p>Överskridna SLA</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="panel-title">Filtrera och sortera</div>
+        <div class="filters">
+          <label class="field">
+            Söktext
+            <input
+              type="search"
+              placeholder="Sök titel, kontaktref, kategori"
+              data-bind="value: query, valueUpdate: 'afterkeydown'" />
+          </label>
+          <label class="field">
+            Status
+            <select data-bind="options: statusOptions, value: statusFilter"></select>
+          </label>
+          <label class="field">
+            Prioritet
+            <select data-bind="options: priorityOptions, value: priorityFilter"></select>
+          </label>
+          <label class="field">
+            Sortering
+            <select
+              data-bind="options: sortOptions, optionsText: 'label', optionsValue: 'value', value: sortBy"></select>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" data-bind="checked: onlyOverdue" />
+            Endast sena ärenden
+          </label>
+        </div>
+        <div class="filter-meta">
+          <span data-bind="text: activeFiltersLabel"></span>
+          <button class="secondary" data-bind="click: resetFilters, enable: hasActiveFilters">Rensa filter</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">
+          Ärenden
+          <div class="panel-actions">
+            <button class="secondary" data-bind="click: reloadCases, disable: isLoading">Ladda om</button>
+            <div class="loading" data-bind="visible: isLoading">
+              <span>Hämtar ärenden...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="error-box" data-bind="visible: errorMessage">
+          <strong>Fel:</strong>
+          <span data-bind="text: errorMessage"></span>
+        </div>
+
+        <div class="case-grid" data-bind="foreach: filteredCases">
+          <article
+            class="case-card"
+            data-bind="css: { overdue: isOverdue, warning: isWarning }">
+            <div>
+              <div class="case-meta">
+                <span data-bind="text: id"></span>
+                <span data-bind="text: category"></span>
+              </div>
+              <h3 data-bind="text: title"></h3>
+            </div>
+            <div class="case-meta">
+              <span data-bind="text: contactRef"></span>
+              <span data-bind="text: assignee"></span>
+            </div>
+            <div class="case-meta">
+              <span class="badge" data-bind="text: status"></span>
+              <span class="badge" data-bind="text: priority"></span>
+              <span
+                class="badge"
+                data-bind="text: slaLabel, css: { warning: isWarning, danger: isOverdue }"></span>
+            </div>
+            <div class="case-footer">
+              <span data-bind="text: createdLabel"></span>
+              <span data-bind="text: slaLabel"></span>
+            </div>
+          </article>
+        </div>
+
+        <div class="notice" data-bind="visible: filteredCases().length === 0 && !isLoading()">
+          Inga ärenden matchar filtret just nu.
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Nytt ärende</div>
+        <form data-bind="submit: saveNewCase">
+          <div class="form-grid">
+            <label class="field">
+              Titel
+              <input
+                type="text"
+                placeholder="Kort beskrivning"
+                data-bind="value: newCase.title" />
+            </label>
+            <label class="field">
+              Kontaktref (pseudonym)
+              <input
+                type="text"
+                placeholder="Ex: K-2048"
+                data-bind="value: newCase.contactRef" />
+            </label>
+            <label class="field">
+              Kategori
+              <select data-bind="options: categoryOptions, value: newCase.category"></select>
+            </label>
+            <label class="field">
+              Prioritet
+              <select data-bind="options: priorityOptions.slice(1), value: newCase.priority"></select>
+            </label>
+            <label class="field">
+              Status
+              <select data-bind="options: statusOptions.slice(1), value: newCase.status"></select>
+            </label>
+            <label class="field">
+              Tilldelad
+              <select data-bind="options: assigneeOptions, value: newCase.assignee"></select>
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" data-bind="disable: isSaving">Spara ärende</button>
+            <button
+              class="secondary"
+              type="button"
+              data-bind="click: resetForm, disable: isSaving">
+              Återställ
+            </button>
+            <span class="loading" data-bind="visible: isSaving">Sparar...</span>
+          </div>
+
+          <div class="error-box" data-bind="visible: saveError">
+            <strong>Fel:</strong>
+            <span data-bind="text: saveError"></span>
+          </div>
+
+          <div class="notice" data-bind="visible: saveMessage">
+            <span data-bind="text: saveMessage"></span>
+          </div>
+
+          <div class="error-box" data-bind="visible: validationErrors().length">
+            <p data-bind="text: validationMessage"></p>
+            <ul class="error-list" data-bind="foreach: validationErrors">
+              <li data-bind="text: $data"></li>
+            </ul>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Demo-inställningar</div>
+        <label class="toggle">
+          <input type="checkbox" data-bind="checked: simulateLoadError" />
+          Simulera fel vid laddning
+        </label>
+        <label class="toggle">
+          <input type="checkbox" data-bind="checked: simulateSaveError" />
+          Simulera fel vid sparande
+        </label>
+        <p class="subtitle">
+          Inga riktiga personuppgifter används. All data är fiktiv och endast för demo.
+        </p>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

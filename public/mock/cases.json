@@ -1,0 +1,82 @@
+[
+  {
+    "id": "CF-1201",
+    "title": "Onboarding för ny kund",
+    "contactRef": "K-2048",
+    "category": "Onboarding",
+    "priority": "Hög",
+    "status": "Pågående",
+    "assignee": "Maja Nilsson",
+    "createdAt": "2026-01-18T08:10:00Z"
+  },
+  {
+    "id": "CF-1202",
+    "title": "Behörighet till rapportportal",
+    "contactRef": "K-3105",
+    "category": "Behörighet",
+    "priority": "Medel",
+    "status": "Under utredning",
+    "assignee": "Supportteam",
+    "createdAt": "2026-01-17T14:40:00Z"
+  },
+  {
+    "id": "CF-1203",
+    "title": "Klagomål om svarstid",
+    "contactRef": "K-1189",
+    "category": "Övrigt",
+    "priority": "Låg",
+    "status": "Ny",
+    "assignee": "Ej tilldelad",
+    "createdAt": "2026-01-16T09:25:00Z"
+  },
+  {
+    "id": "CF-1204",
+    "title": "Fakturafråga om dubbeldebitering",
+    "contactRef": "K-2277",
+    "category": "Fakturering",
+    "priority": "Medel",
+    "status": "Väntar",
+    "assignee": "Rami Åkesson",
+    "createdAt": "2026-01-15T12:05:00Z"
+  },
+  {
+    "id": "CF-1205",
+    "title": "Incident: inloggning timeout",
+    "contactRef": "K-4021",
+    "category": "Incident",
+    "priority": "Hög",
+    "status": "Pågående",
+    "assignee": "Alex Kim",
+    "createdAt": "2026-01-18T17:20:00Z"
+  },
+  {
+    "id": "CF-1206",
+    "title": "Tekniskt fel i export",
+    "contactRef": "K-5090",
+    "category": "Teknik",
+    "priority": "Hög",
+    "status": "Under utredning",
+    "assignee": "Supportteam",
+    "createdAt": "2026-01-19T07:15:00Z"
+  },
+  {
+    "id": "CF-1207",
+    "title": "Onboarding klart - uppföljning",
+    "contactRef": "K-6008",
+    "category": "Onboarding",
+    "priority": "Låg",
+    "status": "Klar",
+    "assignee": "Maja Nilsson",
+    "createdAt": "2026-01-14T10:45:00Z"
+  },
+  {
+    "id": "CF-1208",
+    "title": "Behov av ny behörighetsroll",
+    "contactRef": "K-7012",
+    "category": "Behörighet",
+    "priority": "Medel",
+    "status": "Ny",
+    "assignee": "Ej tilldelad",
+    "createdAt": "2026-01-19T06:00:00Z"
+  }
+]
