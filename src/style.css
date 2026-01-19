@@ -109,7 +109,8 @@ h1 {
 .filters {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  column-gap: 24px;
+  row-gap: 20px;
 }
 
 .field {
@@ -247,7 +248,7 @@ button:not(:disabled):hover {
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  gap: 20px;
 }
 
 .form-actions {
@@ -255,6 +256,7 @@ button:not(:disabled):hover {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+  margin-top: 12px;
 }
 
 .notice {
