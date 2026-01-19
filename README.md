@@ -16,6 +16,8 @@ Det här projektet är byggt för att kunna användas i CV/portfolio och visa at
 - Subscriptions som sparar filter i `localStorage`
 - Mockad API‑inläsning från `public/mock/cases.json`
 - “Simulera fel” för att visa felhantering
+- Sidopanel för ärenden med redigering, kommentarer och historik
+- Autosparar ändringar i `localStorage`
 
 ## Kom igång
 

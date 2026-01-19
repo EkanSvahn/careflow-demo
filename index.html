@@ -70,7 +70,22 @@
 
       <section class="panel">
         <div class="panel-title">
-          Ärenden
+          <div class="tab-bar">
+            <button
+              class="tab"
+              type="button"
+              data-bind="click: () => setCaseTab('open'), css: { active: caseTab() === 'open' }">
+              Aktiva
+              <span class="tab-count" data-bind="text: filteredOpenCases().length"></span>
+            </button>
+            <button
+              class="tab"
+              type="button"
+              data-bind="click: () => setCaseTab('done'), css: { active: caseTab() === 'done' }">
+              Avslutade
+              <span class="tab-count" data-bind="text: filteredDoneCases().length"></span>
+            </button>
+          </div>
           <div class="panel-actions">
             <button class="secondary" data-bind="click: reloadCases, disable: isLoading">Ladda om</button>
             <div class="loading" data-bind="visible: isLoading">
@@ -84,10 +99,10 @@
           <span data-bind="text: errorMessage"></span>
         </div>
 
-        <div class="case-grid" data-bind="foreach: filteredCases">
+        <div class="case-grid" data-bind="foreach: visibleCases">
           <article
             class="case-card"
-            data-bind="css: { overdue: isOverdue, warning: isWarning }">
+            data-bind="css: { overdue: isOverdue, warning: isWarning, closed: isClosed }">
             <div>
               <div class="case-meta">
                 <span data-bind="text: id"></span>
@@ -106,6 +121,14 @@
                 class="badge"
                 data-bind="text: slaLabel, css: { warning: isWarning, danger: isOverdue }"></span>
             </div>
+            <div class="case-actions">
+              <button
+                class="secondary"
+                type="button"
+                data-bind="click: $parent.openCase">
+                Öppna
+              </button>
+            </div>
             <div class="case-footer">
               <span data-bind="text: createdLabel"></span>
               <span data-bind="text: slaLabel"></span>
@@ -113,8 +136,8 @@
           </article>
         </div>
 
-        <div class="notice" data-bind="visible: filteredCases().length === 0 && !isLoading()">
-          Inga ärenden matchar filtret just nu.
+        <div class="notice" data-bind="visible: visibleCases().length === 0 && !isLoading()">
+          <span data-bind="text: visibleEmptyLabel"></span>
         </div>
       </section>
 
@@ -197,6 +220,97 @@
           Inga riktiga personuppgifter används. All data är fiktiv och endast för demo.
         </p>
       </section>
+
+      <div class="drawer-backdrop" data-bind="css: { open: isDrawerOpen }, click: closeCase"></div>
+      <aside class="drawer" data-bind="css: { open: isDrawerOpen }, with: selectedCase">
+        <div class="drawer-header">
+          <div>
+            <p class="drawer-kicker" data-bind="text: id"></p>
+            <h2 data-bind="text: title"></h2>
+            <p class="drawer-sub" data-bind="text: contactRef"></p>
+          </div>
+          <button class="secondary" type="button" data-bind="click: $root.closeCase">Stäng</button>
+        </div>
+        <div class="drawer-body">
+          <div class="drawer-section">
+            <div class="drawer-section-title">Ärendedetaljer</div>
+            <div class="drawer-grid">
+              <label class="field">
+                Titel
+                <input type="text" data-bind="value: title" />
+              </label>
+              <label class="field">
+                Kontaktref
+                <input type="text" data-bind="value: contactRef" />
+              </label>
+              <label class="field">
+                Kategori
+                <select data-bind="options: $root.categoryOptions, value: category"></select>
+              </label>
+              <label class="field">
+                Prioritet
+                <select data-bind="options: $root.priorityOptions.slice(1), value: priority"></select>
+              </label>
+              <label class="field">
+                Status
+                <select data-bind="options: $root.statusOptions.slice(1), value: status"></select>
+              </label>
+              <label class="field">
+                Tilldelad
+                <select data-bind="options: $root.assigneeOptions, value: assignee"></select>
+              </label>
+            </div>
+            <div class="drawer-actions">
+              <button
+                type="button"
+                data-bind="click: $root.markSelectedAsDone, enable: status() !== 'Klar'">
+                Markera klar
+              </button>
+              <span class="drawer-meta" data-bind="text: $root.lastSavedLabel"></span>
+            </div>
+            <div class="drawer-info">
+              <span data-bind="text: createdLabel"></span>
+              <span
+                class="badge"
+                data-bind="text: slaLabel, css: { warning: isWarning, danger: isOverdue }"></span>
+              <span class="badge" data-bind="text: status"></span>
+              <span class="badge" data-bind="text: priority"></span>
+            </div>
+          </div>
+
+          <div class="drawer-section">
+            <div class="drawer-section-title">Kommentarer</div>
+            <p class="empty-state" data-bind="visible: !hasComments()">Inga kommentarer ännu.</p>
+            <div class="comment-list" data-bind="foreach: comments">
+              <article class="comment">
+                <div class="comment-meta">
+                  <strong data-bind="text: author"></strong>
+                  <span data-bind="text: createdLabel"></span>
+                </div>
+                <p data-bind="text: text"></p>
+              </article>
+            </div>
+            <div class="comment-form">
+              <label class="field">
+                Ny kommentar
+                <textarea rows="3" data-bind="value: $root.newCommentText"></textarea>
+              </label>
+              <button type="button" data-bind="click: $root.addComment">Lägg till kommentar</button>
+            </div>
+          </div>
+
+          <div class="drawer-section">
+            <div class="drawer-section-title">Historik</div>
+            <p class="empty-state" data-bind="visible: !hasHistory()">Ingen historik ännu.</p>
+            <ul class="history-list" data-bind="foreach: history">
+              <li>
+                <span data-bind="text: label"></span>
+                <span data-bind="text: createdLabel"></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </aside>
     </div>
 
     <script type="module" src="/src/main.js"></script>
